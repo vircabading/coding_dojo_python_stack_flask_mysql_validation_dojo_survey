@@ -1,5 +1,6 @@
 # import the function that will return an instance of a connection ////////
 from flask_app.config.mysqlconnection import connectToMySQL
+from flask import flash
 
 TARGETDATABASE = 'dojo_survey_db'                                                # Designates the database we are using
 TABLENAME = "users"                                                     # Designates the table we are using
@@ -11,16 +12,33 @@ class Users:
         self.name = data['name']
         self.location = data['location']
         self.fav_language = data['fav_language']
+        self.comment = data['comment']
         self.created_at = data['created_at']
         self.updated_at = data['updated_at']
+
+    # //// FLASH ///////////////////////////////////////////////////////////
+
+    @staticmethod
+    def validate_user_create_data(data:dict):
+        is_valid = True
+        if len(data['name']) < 3:
+            flash("Name must be at least 3 characters in length","error_user_name")
+            is_valid = False
+        if len( data['comment'] ) < 3:
+            flash("Comment must ve at least 3 characters in length","error_user_comment")
+            is_valid = False
+        elif len( data['comment'] ) > 255:
+            flash("Comment must be < 255 characters in length", "error_user_comment")
+            is_valid = False
+        return is_valid
 
     # //// CREATE //////////////////////////////////////////////////////////
 
     # **** Insert One Method ***********************************************
     # @returns ID of created user
     @classmethod
-    def save(cls, data ):
-        query = "INSERT INTO " + TABLENAME +" ( first_name , last_name , email) VALUES ( %(first_name)s , %(last_name)s , %(email)s );"
+    def create(cls, data ):
+        query = "INSERT INTO " + TABLENAME +" ( name, location , fav_language , comment) VALUES ( %(name)s , %(location)s , %(fav_language)s, %(comment)s );"
         # data is a dictionary that will be passed into the save method from server.py
         return connectToMySQL(TARGETDATABASE).query_db( query, data )
         

@@ -28,12 +28,12 @@
     <div class="container mt-4">
       <div class="row">
         <!-- //// LEFT COLUMN //////////////////////////////////// -->
-        <div class="left-column col-3 bg-dark rounded">
+        <div class="col-3 bg-dark rounded">
           <h1 class="text-warning">
             Dojo Survey
           </h1>
           <p>
-            Name must be at least 3 characters.
+            Name and Comment must be at least 3 characters in length
           </p>
           <p>
             Must choose a dojo location and favorite language
@@ -44,8 +44,50 @@
           <!-- GUTTER -->
         </div>
         <!-- //// RIGHT COLUMN /////////////////////////////////// -->
-        <div class="right-column col-8 bg-dark rounded">
-
+        <div class="col-8 bg-dark rounded p-2">
+          <form action='/post' method='post'>
+            <div class="form-group mb-2">
+              <label class="form-label" for="name">Name:</label>
+              <input class="form-control" type="text" id="name" name="name">
+              {% for message in get_flashed_messages(category_filter='error_user_name')  %}   <!-- Displays any existing User Name Error Messages-->
+                <p class="alert alert-danger">
+                  {{ message }}
+                </p>
+              {% endfor %}
+            </div>
+            <div class="form-group  mb-2">
+              <label class="form-label" for="location">Location:<label>
+                <select class="form-control" id="location" name="location">
+                  <option value="Seattle">Seattle</option>
+                  <option value="San Jose">San Jose</option>
+                  <option value="Los Angeles">Los Angeles</option>
+                  <option value="Chicago">Chicago</option>
+                  <option value="Dallas">Dallas</option>
+                  <option value="New York">New York</option>
+                </select>
+            </div>
+            <div class="form-group mb-2">
+              <label for="fav_language">Favorite Language:<label>
+                <select class="form-control" id="fav_language" name="fav_language">
+                  <option value="HTML/CSS">HTML / CSS</option>
+                  <option value="Javascript">Javascript</option>
+                  <option value="Python">Python</option>
+                  <option value="JAVA">JAVA</option>
+                  <option value="C++">C++</option>
+                  <option value="C#">C#</option>
+                </select>
+            </div>
+            <div class="form-group mb-2">
+              <label class="form-label" for="comment">Comment:</label>
+              <textarea class="form-control" name="comment" id="comment" rows="3"></textarea>
+              {% for message in get_flashed_messages(category_filter='error_user_comment')  %}   <!-- Displays any existing User Comment Error Messages-->
+                <p class="alert alert-danger">
+                  {{ message }}
+                </p>
+              {% endfor %}
+            </div>
+            <input class="btn btn-info mb-2" type="submit" value="Create">
+          </form>
         </div>
       </div>
     </div>

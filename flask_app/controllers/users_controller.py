@@ -10,24 +10,33 @@ from flask_app.models import users_model
 # //// SHOW /////////////////////////////////////
 
 @app.route('/')                                                         # Main Page
-def index():
+def root():
     print("******** in index *******************")
     return render_template("index.html")
 
 
 # //// CREATE ////////////////////////////////////
 
-# @app.route('/users/new/post', methods=['POST'])                         # Retrieve the input values from create form
-# def users_new_post():
-#     print("**** In Users New Post Retrieval **************")
-#     data = {                                                            # Create Data Dictionary from values in form
-#         'first_name': request.form['first_name'],
-#         'last_name': request.form['last_name'],
-#         'email': request.form['email']
-#     }
-#     print(data)
-#     users_class.Users.save(data)                                        # Insert data retrieved into users database
-#     return redirect("/users")
+@app.route('/post', methods=['POST'])                         # Retrieve the input values from create form
+def post():
+    print("**** In / Post Retrieval **************")
+    data = {                                                            # Create Data Dictionary from values in form
+        'name': request.form['name'],
+        'location': request.form['location'],
+        'comment' : request.form['comment'],
+        'fav_language': request.form['fav_language']
+    }
+    print(data)
+
+    if not users_model.Users.validate_user_create_data(data):
+        return redirect("/")
+
+    id = users_model.Users.create(data)                                 # Insert User in to database
+    data['id'] = id                                                     # Memorize ID of created User
+
+    user = users_model.Users.get_one(data)                              # get an instance of the created user
+    ("Newly created user instance: ", user)
+    return render_template("user_show.html", user = user)
 
 # //// RETRIEVE ////////////////////////////////////
 
